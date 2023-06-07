@@ -1,13 +1,12 @@
-package com.instantrip.was.entity;
+package com.instantrip.was.domain.user;
 
-import com.instantrip.was.BooleanTFConverter;
+import com.instantrip.was.global.util.BooleanTFConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.DynamicInsert;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity

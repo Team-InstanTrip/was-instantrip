@@ -1,4 +1,4 @@
-package com.instantrip.was;
+package com.instantrip.was.global.util;
 
 import jakarta.persistence.AttributeConverter;
 
