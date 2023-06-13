@@ -2,9 +2,7 @@ package com.instantrip.was.domain.user;
 
 import com.instantrip.was.global.util.BooleanTFConverter;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.sql.Timestamp;
@@ -12,7 +10,9 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "USER_")
 @DynamicInsert
-@Getter @ToString
+@Getter @Setter @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id

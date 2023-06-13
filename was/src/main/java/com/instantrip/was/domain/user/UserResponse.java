@@ -1,13 +1,14 @@
 package com.instantrip.was.domain.user;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.sql.Timestamp;
 
 @Getter @Setter @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserResponse {
+    private Long userId;
     private String loginId;
     private String loginPw;
     private String userName;
