@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "USER_")
 @DynamicInsert
-@Getter @Setter @ToString
+@Getter @ToString
 public class User {
 
     @Id
