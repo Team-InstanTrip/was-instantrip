@@ -4,10 +4,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -31,5 +29,12 @@ public class UserController {
         }
         else
             return null;
+    }
+
+    @PostMapping(path = "/sign-up")
+    @ResponseStatus(HttpStatus.OK)
+    public void userAdd(@RequestBody UserRequest userRequest) {
+        User user = modelMapper.map(userRequest, User.class);
+        userService.addUser(user);
     }
 }
