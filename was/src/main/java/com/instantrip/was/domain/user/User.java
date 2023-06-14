@@ -4,12 +4,14 @@ import com.instantrip.was.global.util.BooleanTFConverter;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "USER_")
 @DynamicInsert
+@DynamicUpdate
 @Getter @Setter @ToString
 @NoArgsConstructor
 @AllArgsConstructor

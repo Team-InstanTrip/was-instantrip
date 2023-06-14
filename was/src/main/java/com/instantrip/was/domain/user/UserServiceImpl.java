@@ -21,8 +21,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findUserByLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId);
+    }
+
+    @Override
     public Optional<User> findUserByEmail(String email) {
-        return Optional.empty();
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public boolean existsUserByLoginId(String loginId) {
+        return userRepository.existsByLoginId(loginId);
+    }
+
+    @Override
+    public boolean existsUserByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     @Override
