@@ -1,5 +1,7 @@
-package com.instantrip.was.domain.user;
+package com.instantrip.was.domain.user.service;
 
+import com.instantrip.was.domain.user.entity.User;
+import com.instantrip.was.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

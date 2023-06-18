@@ -1,8 +1,11 @@
-package com.instantrip.was.domain.user;
+package com.instantrip.was.domain.user.controller;
 
+import com.instantrip.was.domain.user.dto.UserRequest;
+import com.instantrip.was.domain.user.dto.UserResponse;
+import com.instantrip.was.domain.user.service.UserService;
+import com.instantrip.was.domain.user.entity.User;
 import com.instantrip.was.domain.user.exception.DuplicateUserException;
 import com.instantrip.was.domain.user.exception.UserNotFoundException;
-import com.instantrip.was.global.dto.BaseResponse;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

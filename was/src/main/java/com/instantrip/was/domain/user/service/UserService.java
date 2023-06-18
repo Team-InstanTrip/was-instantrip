@@ -1,4 +1,6 @@
-package com.instantrip.was.domain.user;
+package com.instantrip.was.domain.user.service;
+
+import com.instantrip.was.domain.user.entity.User;
 
 import java.util.Optional;
 

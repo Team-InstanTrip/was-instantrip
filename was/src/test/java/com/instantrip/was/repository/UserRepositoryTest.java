@@ -1,7 +1,7 @@
 package com.instantrip.was.repository;
 
-import com.instantrip.was.domain.user.User;
-import com.instantrip.was.domain.user.UserRepository;
+import com.instantrip.was.domain.user.entity.User;
+import com.instantrip.was.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

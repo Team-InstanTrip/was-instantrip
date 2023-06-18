@@ -1,4 +1,4 @@
-package com.instantrip.was.domain.user;
+package com.instantrip.was.domain.user.entity;
 
 import com.instantrip.was.global.util.BooleanTFConverter;
 import jakarta.persistence.*;

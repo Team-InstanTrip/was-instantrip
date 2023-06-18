@@ -1,4 +1,4 @@
-package com.instantrip.was.domain.user;
+package com.instantrip.was.domain.user.dto;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 @Getter @Setter @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
+public class UserRequest {
     private Long userId;
     private String loginId;
     private String loginPw;
