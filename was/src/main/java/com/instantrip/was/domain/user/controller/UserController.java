@@ -29,41 +29,32 @@ public class UserController {
 
     @GetMapping(path = "/{userId}")
     public UserResponse userDetails(@PathVariable Long userId) {
-        Optional<User> user = userService.findUserByUserId(userId);
-        if (user.isPresent()) {
-            UserResponse userResponse = modelMapper.map(user.get(), UserResponse.class);
-            return userResponse;
-        }
-        else
-            throw new UserNotFoundException();
+        User user = userService.findUserByUserId(userId);
+        UserResponse userResponse = modelMapper.map(user, UserResponse.class);
+        
+        return userResponse;
     }
 
     @PostMapping(path = "/sign-up")
     @ResponseStatus(HttpStatus.OK)
     public void userAdd(@RequestBody UserRequest userRequest) {
         User user = modelMapper.map(userRequest, User.class);
-
-        // loginId 중복검사
-        if(userService.findUserByLoginId(userRequest.getLoginId()).isPresent()) {
-            throw new DuplicateUserException();
-        }
-        // email 중복검사
-        if (userService.findUserByEmail(userRequest.getEmail()).isPresent()) {
-            throw new DuplicateUserException();
-        }
-
         userService.addUser(user);
+    }
+
+    @PostMapping(path = "/login")
+    @ResponseStatus(HttpStatus.OK)
+    public void login(@RequestBody UserRequest userRequest) {
+        // TODO
     }
 
     @GetMapping("/check-email")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> checkEmailDuplicated(@RequestParam String email) {
-        if (userService.existsUserByEmail(email)) {
+        if (userService.existsUserByEmail(email))
             return ResponseEntity.status(HttpStatus.FOUND).body("이메일이 중복됩니다.");
-        } else {
-            // TODO 익셉션 처리
+        else
             return ResponseEntity.status(HttpStatus.OK).build();
-        }
     }
 
     @GetMapping("/check-login-id")

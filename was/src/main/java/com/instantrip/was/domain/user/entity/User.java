@@ -30,4 +30,8 @@ public class User {
     @Convert(converter = BooleanTFConverter.class)
     private Boolean activeStatus;
     private String role;
+
+    public boolean checkPassword(String password) {
+        return loginPw.equals(password);
+    }
 }
