@@ -21,4 +21,12 @@ public class MessageServiceImpl implements MessageService {
             return message.get();
         else throw new MessageNotFoundException();
     }
+
+    @Override
+    public void addMessage(Message message) {
+        // 만료 시간 설정
+        message.calculateExpireTime();
+
+        messageRepository.save(message);
+    }
 }

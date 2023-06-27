@@ -3,6 +3,7 @@ package com.instantrip.was.domain.message.entity;
 import com.instantrip.was.global.util.BooleanTFConverter;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -13,12 +14,12 @@ import java.sql.Timestamp;
 @DynamicInsert
 @DynamicUpdate
 @Getter @Setter @ToString
-@NoArgsConstructor
 @AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class Message {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MESSAGE_ID_SEQ")
     @SequenceGenerator(sequenceName = "MESSAGE_ID_SEQ", allocationSize = 1, name = "MESSAGE_ID_SEQ")
     private Long messageId;
 
@@ -32,7 +33,11 @@ public class Message {
     private Boolean activeStatus;
     private Double latitude;
     private Double longitude;
-    private Integer like;
+    private Integer likes;
     private String status;
 
+    public void calculateExpireTime() {
+        this.createTime = new Timestamp(System.currentTimeMillis());
+        this.expireTime = new Timestamp(createTime.getTime() + duration * 1000 * 60);
+    }
 }
