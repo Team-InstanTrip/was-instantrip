@@ -47,24 +47,4 @@ public class UserController {
     public void login(@RequestBody UserRequest userRequest) {
         // TODO
     }
-
-    @GetMapping("/check-email")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> checkEmailDuplicated(@RequestParam String email) {
-        if (userService.existsUserByEmail(email))
-            return ResponseEntity.status(HttpStatus.FOUND).body("이메일이 중복됩니다.");
-        else
-            return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @GetMapping("/check-login-id")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> checkLoginIdDuplicated(@RequestParam String loginId) {
-        if (userService.existsUserByLoginId(loginId)) {
-            return ResponseEntity.status(HttpStatus.FOUND).body("아이디가 중복됩니다.");
-        } else {
-            // TODO 익셉션 처리
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
-    }
 }

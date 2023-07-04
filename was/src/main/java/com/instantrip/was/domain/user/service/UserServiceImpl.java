@@ -19,14 +19,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(User user) {
-        // loginId 중복검사
-        if (existsUserByLoginId(user.getLoginId()))
-            throw new DuplicateUserException();
-        // email 중복검사
-        if (existsUserByEmail(user.getEmail())) {
-            throw new DuplicateUserException();
-        }
-
         userRepository.save(user);
     }
 
@@ -40,11 +32,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findUserByLoginId(String loginId) {
-        return userRepository.findByLoginId(loginId);
-    }
-
-    @Override
     public User findUserByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
 
@@ -54,24 +41,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsUserByLoginId(String loginId) {
-        return userRepository.existsByLoginId(loginId);
-    }
-
-    @Override
-    public boolean existsUserByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    @Override
     public boolean login(User user) {
-        Optional<User> resultUser = userRepository.findByLoginIdAndActiveStatus(user.getLoginId(), user.getActiveStatus());
-        if (!resultUser.isPresent())
-            throw new UserNotFoundException();
-
-        if(resultUser.get().getLoginPw().equals(user.getLoginPw()))
-            throw new InvalidLoginInfoException();
-
+        // TODO 카카오 로그인
         return true;
     }
 

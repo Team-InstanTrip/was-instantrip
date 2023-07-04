@@ -22,16 +22,10 @@ public class User {
     @SequenceGenerator(sequenceName = "USER_ID_SEQ", allocationSize = 1, name = "USER_ID_SEQ")
     private Long userId;
 
-    private String loginId;
-    private String loginPw;
     private String userName;
     private String email;
     private Timestamp joinDate;
     @Convert(converter = BooleanTFConverter.class)
     private Boolean activeStatus;
     private String role;
-
-    public boolean checkPassword(String password) {
-        return loginPw.equals(password);
-    }
 }

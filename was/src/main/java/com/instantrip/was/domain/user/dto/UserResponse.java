@@ -9,8 +9,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class UserResponse {
     private Long userId;
-    private String loginId;
-    private String loginPw;
     private String userName;
     private String email;
     private Timestamp joinDate;
