@@ -28,4 +28,5 @@ public class User {
     @Convert(converter = BooleanTFConverter.class)
     private Boolean activeStatus;
     private String role;
+    private String kakaoUserNumber;
 }

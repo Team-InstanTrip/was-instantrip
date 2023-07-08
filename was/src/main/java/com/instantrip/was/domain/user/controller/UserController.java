@@ -2,6 +2,7 @@ package com.instantrip.was.domain.user.controller;
 
 import com.instantrip.was.domain.user.dto.UserRequest;
 import com.instantrip.was.domain.user.dto.UserResponse;
+import com.instantrip.was.domain.user.service.KakaoService;
 import com.instantrip.was.domain.user.service.UserService;
 import com.instantrip.was.domain.user.entity.User;
 import com.instantrip.was.domain.user.exception.DuplicateUserException;
@@ -23,9 +24,20 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    KakaoService kakaoService;
 
     @Autowired
     ModelMapper modelMapper;
+
+    @GetMapping(path = "/oauth")
+    public void kakaoOauth(@RequestParam String code) {
+        // 카카오 인가코드 수신
+        logger.info("code : {}", code);
+
+        // access token 발급
+        kakaoService.getKakaoAccessToken(code);
+    }
 
     @GetMapping(path = "/{userId}")
     public UserResponse userDetails(@PathVariable Long userId) {
