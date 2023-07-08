@@ -14,4 +14,5 @@ public class UserResponse {
     private Timestamp joinDate;
     private Boolean activeStatus;
     private String role;
+    private Long kakaoUserNumber;
 }

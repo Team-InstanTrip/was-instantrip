@@ -51,7 +51,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean login(User user) {
-        // TODO 카카오 로그인
+        Optional<User> foundUser = userRepository.findByKakaoUserNumber(user.getKakaoUserNumber());
+
+        // 이미 회원인 경우 로그인처리
+        if (foundUser.isPresent()) {
+            // TODO 로그인
+        }
+        // 회원 아닌 경우 회원가입 처리
+        else {
+            // TODO 클라이언트에서 닉네임 입력받아서 전송받기
+            addUser(user);
+        }
         return true;
     }
 

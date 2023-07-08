@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @Getter @Setter @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class User {
 
     @Id
@@ -28,5 +29,14 @@ public class User {
     @Convert(converter = BooleanTFConverter.class)
     private Boolean activeStatus;
     private String role;
-    private String kakaoUserNumber;
+    private Long kakaoUserNumber;
+
+    public User(Long kakaoUserNumber) {
+        this.kakaoUserNumber = kakaoUserNumber;
+    }
+
+    public User(String email, Long kakaoUserNumber) {
+        this.email = email;
+        this.kakaoUserNumber = kakaoUserNumber;
+    }
 }

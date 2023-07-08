@@ -2,6 +2,7 @@ package com.instantrip.was.domain.user.service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.instantrip.was.domain.user.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,4 +81,55 @@ public class KakaoService {
         return accessToken;
     }
 
+    public User getKakaoUserInfo(String accessToken) {
+        String reqUrl = "https://kapi.kakao.com/v2/user/me";
+
+        long id = 0L;
+        String email = null;
+        User user = null;
+
+        try {
+            URL url = new URL(reqUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+            // POST 전송
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Authorization", "Bearer " + accessToken);
+
+            // 결과 수신
+            int responseCode = conn.getResponseCode();
+            logger.info("▶▶▶ responseCode : {}", responseCode);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                response.append(line);
+            }
+            logger.info("▶▶▶ responseData : {}", response);
+
+            // JSON 파싱
+            JsonElement jsonElement = JsonParser.parseString(response.toString());
+            id = jsonElement.getAsJsonObject().get("id").getAsLong();
+            boolean hasEmail = jsonElement.getAsJsonObject().get("kakao_account")
+                    .getAsJsonObject().get("has_email").getAsBoolean();
+
+            if (hasEmail)
+                email = jsonElement.getAsJsonObject().get("kakao_account")
+                        .getAsJsonObject().get("email").getAsString();
+
+            logger.info("▶▶▶ id: {}", id);
+            logger.info("▶▶▶ email: {}", email);
+
+            user = new User(email, id);
+
+            br.close();
+        } catch (Exception e) {
+            logger.error("Kakao 사용자 정보 가져오는 중 에러 발생");
+            logger.error("", e);
+        }
+
+        return user;
+    }
 }
