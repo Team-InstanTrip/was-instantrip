@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 @Getter @Setter @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class User {
 
     @Id
