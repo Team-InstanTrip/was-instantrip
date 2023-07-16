@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @Getter @Setter @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class User {
 
     @Id
@@ -22,16 +23,20 @@ public class User {
     @SequenceGenerator(sequenceName = "USER_ID_SEQ", allocationSize = 1, name = "USER_ID_SEQ")
     private Long userId;
 
-    private String loginId;
-    private String loginPw;
     private String userName;
     private String email;
     private Timestamp joinDate;
     @Convert(converter = BooleanTFConverter.class)
     private Boolean activeStatus;
     private String role;
+    private Long kakaoUserNumber;
 
-    public boolean checkPassword(String password) {
-        return loginPw.equals(password);
+    public User(Long kakaoUserNumber) {
+        this.kakaoUserNumber = kakaoUserNumber;
+    }
+
+    public User(String email, Long kakaoUserNumber) {
+        this.email = email;
+        this.kakaoUserNumber = kakaoUserNumber;
     }
 }

@@ -9,11 +9,10 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class UserRequest {
     private Long userId;
-    private String loginId;
-    private String loginPw;
     private String userName;
     private String email;
     private Timestamp joinDate;
     private Boolean activeStatus;
     private String role;
+    private Long kakaoUserNumber;
 }
