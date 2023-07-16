@@ -8,7 +8,7 @@ public interface UserService {
     void addUser(User user);
     User findUserByUserId(Long userId);
     User findUserByEmail(String email);
-    void login(User user);
+    User login(User user);
     void modifyUser(User user);
     void removeUser(User user);
 }

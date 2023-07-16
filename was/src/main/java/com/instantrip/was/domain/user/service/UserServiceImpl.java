@@ -4,6 +4,8 @@ import com.instantrip.was.domain.user.entity.User;
 import com.instantrip.was.domain.user.exception.UserException;
 import com.instantrip.was.domain.user.exception.UserExceptionType;
 import com.instantrip.was.domain.user.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
-    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     UserRepository userRepository;
@@ -46,15 +48,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void login(User user) {
+    public User login(User user) {
         Optional<User> foundUser = userRepository.findByKakaoUserNumber(user.getKakaoUserNumber());
 
         // 이미 회원인 경우 로그인처리
         if (foundUser.isPresent()) {
-            // TODO 로그인
+            log.info("▶▶▶ 로그인 성공");
+            return foundUser.get();
         }
         // 회원 아닌 경우 -> 회원가입 처리 필요
         else {
+            log.info("▶▶▶ 회원 아님");
             throw new UserException(UserExceptionType.USER_NOT_FOUND);
         }
     }
