@@ -4,10 +4,12 @@ import lombok.*;
 
 import java.sql.Timestamp;
 
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
+public class UserLoginResponse {
     private Long userId;
     private String userName;
     private String email;

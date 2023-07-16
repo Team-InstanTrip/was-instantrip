@@ -1,10 +1,12 @@
 package com.instantrip.was.domain.user.controller;
 
 import com.instantrip.was.domain.user.dto.UserJoinRequest;
+import com.instantrip.was.domain.user.dto.UserLoginResponse;
 import com.instantrip.was.domain.user.dto.UserResponse;
 import com.instantrip.was.domain.user.service.KakaoService;
 import com.instantrip.was.domain.user.service.UserService;
 import com.instantrip.was.domain.user.entity.User;
+import com.instantrip.was.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -43,7 +45,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "회원가입이 필요합니다, 닉네임 입력등의 회원가입 절차로 넘어가야 합니다."),
     })
     @GetMapping(path = "/oauth")
-    public void kakaoOauth(@RequestParam String code, HttpServletRequest req) throws IOException {
+    public ResponseEntity<BaseResponse> kakaoOauth(@RequestParam String code, HttpServletRequest req) throws IOException {
         // 카카오 인가코드 수신
         log.info("code : {}", code);
 
@@ -61,7 +63,11 @@ public class UserController {
 
         session.setAttribute("userId", loginUser.getUserId());
         session.setAttribute("kakaoUserNumber", loginUser.getKakaoUserNumber());
+        session.setAttribute("userName", loginUser.getUserName());
         session.setMaxInactiveInterval(1800);
+
+        return new ResponseEntity(new BaseResponse("00", HttpStatus.OK, "로그인 성공"
+        , loginUser), HttpStatus.OK);
     }
 
     @Operation(summary = "회원정보 조회", description = "회원번호가 userId인 회원정보를 조회합니다.")
@@ -96,7 +102,7 @@ public class UserController {
         if (session != null)
             session.invalidate();
     }
-
+    
     @Hidden
     @GetMapping(path = "/sessionTest")
     public void sessionTest(@SessionAttribute(name = "userId", required = false) Long userId) {

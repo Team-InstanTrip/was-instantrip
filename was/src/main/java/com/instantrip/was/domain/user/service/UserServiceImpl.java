@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(User user) {
-        Optional<User> foundUser = userRepository.findByKakaoUserNumber(user.getKakaoUserNumber());
+        Optional<User> foundUser = userRepository.findByKakaoUserNumberAndActiveStatus(user.getKakaoUserNumber(), true);
 
         // 이미 회원인 경우 로그인처리
         if (foundUser.isPresent()) {

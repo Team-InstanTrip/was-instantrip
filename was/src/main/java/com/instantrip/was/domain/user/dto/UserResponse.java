@@ -15,4 +15,8 @@ public class UserResponse {
     private Boolean activeStatus;
     private String role;
     private Long kakaoUserNumber;
+
+    public UserResponse(Long userId) {
+        this.userId = userId;
+    }
 }
