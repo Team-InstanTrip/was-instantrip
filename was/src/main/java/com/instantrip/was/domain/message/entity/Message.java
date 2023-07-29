@@ -19,7 +19,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class Message {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MESSAGE_ID_SEQ")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(sequenceName = "MESSAGE_ID_SEQ", allocationSize = 1, name = "MESSAGE_ID_SEQ")
     private Long messageId;
 
@@ -39,5 +39,9 @@ public class Message {
     public void calculateExpireTime() {
         this.createTime = new Timestamp(System.currentTimeMillis());
         this.expireTime = new Timestamp(createTime.getTime() + duration * 1000 * 60);
+    }
+
+    public boolean isExpired() {
+        return expireTime.getTime() - System.currentTimeMillis() < 0;
     }
 }
