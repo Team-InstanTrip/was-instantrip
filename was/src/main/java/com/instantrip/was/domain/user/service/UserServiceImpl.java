@@ -1,32 +1,36 @@
 package com.instantrip.was.domain.user.service;
 
 import com.instantrip.was.domain.user.entity.User;
-import com.instantrip.was.domain.user.exception.DuplicateUserException;
-import com.instantrip.was.domain.user.exception.InvalidLoginInfoException;
-import com.instantrip.was.domain.user.exception.UserNotFoundException;
+import com.instantrip.was.domain.user.exception.UserException;
+import com.instantrip.was.domain.user.exception.UserExceptionType;
 import com.instantrip.was.domain.user.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
+
     @Autowired
     UserRepository userRepository;
 
     @Override
     public void addUser(User user) {
-        // loginId 중복검사
-        if (existsUserByLoginId(user.getLoginId()))
-            throw new DuplicateUserException();
-        // email 중복검사
-        if (existsUserByEmail(user.getEmail())) {
-            throw new DuplicateUserException();
+        // DB에 정보 존재하는 고객인 경우
+        Optional<User> findUser = userRepository.findByKakaoUserNumber(user.getKakaoUserNumber());
+        if (findUser.isPresent()) {
+            user.setUserId(findUser.get().getUserId());
+            user.setActiveStatus(true);
+            user.setJoinDate(new Timestamp(System.currentTimeMillis()));
         }
-
         userRepository.save(user);
     }
 
@@ -34,45 +38,38 @@ public class UserServiceImpl implements UserService {
     public User findUserByUserId(Long userId) {
         Optional<User> user = userRepository.findById(userId);
 
-        if (user.isPresent())
+        if (user.isPresent()) {
             return user.get();
-        else throw new UserNotFoundException();
-    }
-
-    @Override
-    public Optional<User> findUserByLoginId(String loginId) {
-        return userRepository.findByLoginId(loginId);
+        } else {
+            throw new UserException(UserExceptionType.USER_NOT_FOUND);
+        }
     }
 
     @Override
     public User findUserByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
 
-        if (user.isPresent())
+        if (user.isPresent()) {
             return user.get();
-        else throw new UserNotFoundException();
+        } else {
+            throw new UserException(UserExceptionType.USER_NOT_FOUND);
+        }
     }
 
     @Override
-    public boolean existsUserByLoginId(String loginId) {
-        return userRepository.existsByLoginId(loginId);
-    }
+    public User login(User user) {
+        Optional<User> foundUser = userRepository.findByKakaoUserNumberAndActiveStatus(user.getKakaoUserNumber(), true);
 
-    @Override
-    public boolean existsUserByEmail(String email) {
-        return userRepository.existsByEmail(email);
-    }
-
-    @Override
-    public boolean login(User user) {
-        Optional<User> resultUser = userRepository.findByLoginIdAndActiveStatus(user.getLoginId(), user.getActiveStatus());
-        if (!resultUser.isPresent())
-            throw new UserNotFoundException();
-
-        if(resultUser.get().getLoginPw().equals(user.getLoginPw()))
-            throw new InvalidLoginInfoException();
-
-        return true;
+        // 이미 회원인 경우 로그인처리
+        if (foundUser.isPresent()) {
+            log.info("▶▶▶ 로그인 성공");
+            return foundUser.get();
+        }
+        // 회원 아닌 경우 -> 회원가입 처리 필요
+        else {
+            log.info("▶▶▶ 회원 아님");
+            throw new UserException(UserExceptionType.USER_NOT_FOUND);
+        }
     }
 
     @Override

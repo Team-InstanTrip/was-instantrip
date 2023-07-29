@@ -4,19 +4,14 @@ import lombok.*;
 
 import java.sql.Timestamp;
 
-@Getter @Setter @ToString
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponse {
-    private Long userId;
+public class UserJoinRequest {
     private String userName;
     private String email;
-    private Timestamp joinDate;
-    private Boolean activeStatus;
     private String role;
     private Long kakaoUserNumber;
-
-    public UserResponse(Long userId) {
-        this.userId = userId;
-    }
 }

@@ -7,11 +7,8 @@ import java.util.Optional;
 public interface UserService {
     void addUser(User user);
     User findUserByUserId(Long userId);
-    Optional<User> findUserByLoginId(String loginId);
     User findUserByEmail(String email);
-    boolean existsUserByLoginId(String loginId);
-    boolean existsUserByEmail(String email);
-    boolean login(User user);
+    User login(User user);
     void modifyUser(User user);
     void removeUser(User user);
 }
