@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 public enum UserExceptionType implements BaseExceptionType {
-    USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "회원정보를 찾을 수 없습니다")
+    USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "회원정보를 찾을 수 없습니다"),
+    USER_UNAUTHORIZED(401, HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.")
     ;
 
     private int errorCode;
