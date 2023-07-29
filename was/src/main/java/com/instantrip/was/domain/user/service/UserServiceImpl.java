@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -22,6 +24,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(User user) {
+        // DB에 정보 존재하는 고객인 경우
+        Optional<User> findUser = userRepository.findByKakaoUserNumber(user.getKakaoUserNumber());
+        if (findUser.isPresent()) {
+            user.setUserId(findUser.get().getUserId());
+            user.setActiveStatus(true);
+            user.setJoinDate(new Timestamp(System.currentTimeMillis()));
+        }
         userRepository.save(user);
     }
 
