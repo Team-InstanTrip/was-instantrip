@@ -22,6 +22,9 @@ public class KakaoService {
     @Value("${kakao-rest-api-key}")
     private String REST_API_KEY;
 
+    @Value("${server.ip}")
+    private String IP;
+
     public String getKakaoAccessToken(String code) {
         logger.info("Kakao AccessToken 요청");
 
@@ -42,7 +45,8 @@ public class KakaoService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=" + REST_API_KEY);
-            sb.append("&redirect_uri=http://localhost:8080/api/users/oauth");
+            sb.append("&redirect_uri=");
+            sb.append("http://" + IP + "/api/users/oauth");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
