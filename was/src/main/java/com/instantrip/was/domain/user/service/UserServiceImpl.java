@@ -68,7 +68,8 @@ public class UserServiceImpl implements UserService {
         // 회원 아닌 경우 -> 회원가입 처리 필요
         else {
             log.info("▶▶▶ 회원 아님");
-            throw new UserException(UserExceptionType.USER_NOT_FOUND);
+            return null;
+            // throw new UserException(UserExceptionType.USER_NOT_FOUND);
         }
     }
 

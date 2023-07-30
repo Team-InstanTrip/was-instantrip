@@ -42,7 +42,7 @@ public class UserController {
     @Operation(summary = "카카오 인증 후처리", description = "카카오인증 후 기존회원 로그인 처리 API 입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "404", description = "회원가입이 필요합니다, 닉네임 입력등의 회원가입 절차로 넘어가야 합니다."),
+            @ApiResponse(responseCode = "404", description = "회원가입이 필요합니다. 여기서 받은 응답 data값 kakaoUserNumber(필수), email(선택)을 받아서, 닉네임 입력 화면으로 넘어가서 회원가입처리"),
     })
     @GetMapping(path = "/oauth")
     public ResponseEntity<BaseResponse> kakaoOauth(@RequestParam String code, HttpServletRequest req) throws IOException {
@@ -56,6 +56,12 @@ public class UserController {
         log.info("▶▶▶ 로그인 요청");
 
         User loginUser = userService.login(user);
+
+        // 회원가입 필요한 경우
+        if (loginUser == null) {
+            return new ResponseEntity(new BaseResponse("404", HttpStatus.NOT_FOUND,
+                    "회원가입이 필요합니다.", user), HttpStatus.NOT_FOUND);
+        }
 
         // 로그인 성공
         req.getSession().invalidate();
