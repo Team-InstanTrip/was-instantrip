@@ -8,6 +8,7 @@ import com.instantrip.was.domain.message.repository.MessageRepository;
 import com.instantrip.was.domain.message.service.MessageService;
 import com.instantrip.was.domain.user.exception.UserException;
 import com.instantrip.was.domain.user.exception.UserExceptionType;
+import com.instantrip.was.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -76,5 +77,22 @@ public class MessageController {
         MessageResponse messageResponse = modelMapper.map(message, MessageResponse.class);
 
         return messageResponse;
+    }
+
+    @Operation(summary = "메시지 좋아요 등록", description = "좋아요 등록")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 메시지입니다."),
+            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다")
+    })
+    @PostMapping(path = "/{messageId}/like")
+    public BaseResponse<String> likeMessage(HttpServletRequest req, @PathVariable Long messageId) {
+        HttpSession session = req.getSession();
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null)
+            throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
+
+        messageService.likeMessage(messageId, userId);
+        return new BaseResponse<>("200", HttpStatus.OK, "좋아요 표시했습니다.", "");
     }
 }
