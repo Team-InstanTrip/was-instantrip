@@ -4,15 +4,11 @@ import com.instantrip.was.domain.user.entity.User;
 import com.instantrip.was.domain.user.exception.UserException;
 import com.instantrip.was.domain.user.exception.UserExceptionType;
 import com.instantrip.was.domain.user.repository.UserRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.Optional;
 
 @Slf4j
@@ -82,5 +78,10 @@ public class UserServiceImpl implements UserService {
     public void removeUser(User user) {
         user.setActiveStatus(false);
         userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUserForTest(Long userId) {
+        userRepository.deleteById(userId);
     }
 }
