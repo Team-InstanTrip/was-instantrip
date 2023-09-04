@@ -3,6 +3,8 @@ package com.instantrip.was.domain.user.controller;
 import com.instantrip.was.domain.user.dto.UserJoinRequest;
 import com.instantrip.was.domain.user.dto.UserLoginResponse;
 import com.instantrip.was.domain.user.dto.UserResponse;
+import com.instantrip.was.domain.user.exception.UserException;
+import com.instantrip.was.domain.user.exception.UserExceptionType;
 import com.instantrip.was.domain.user.service.KakaoService;
 import com.instantrip.was.domain.user.service.UserService;
 import com.instantrip.was.domain.user.entity.User;
@@ -83,7 +85,17 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @GetMapping(path = "/{userId}")
-    public BaseResponse<UserResponse> userDetails(@PathVariable Long userId) {
+    public BaseResponse<UserResponse> userDetails(@PathVariable Long userId, HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session == null)
+            throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
+
+        // 본인만 정보 조회 가능
+        Long sessionUserId = (Long) session.getAttribute("userId");
+        if (!userId.equals(sessionUserId))
+            throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
+
         User user = userService.findUserByUserId(userId);
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
 
