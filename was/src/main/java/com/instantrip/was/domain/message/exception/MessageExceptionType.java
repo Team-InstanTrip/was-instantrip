@@ -1,14 +1,14 @@
-package com.instantrip.was.domain.user.exception;
+package com.instantrip.was.domain.message.exception;
 
 import com.instantrip.was.global.exception.BaseExceptionType;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
-public enum UserExceptionType implements BaseExceptionType {
-    USER_NOT_FOUND(404, HttpStatus.NOT_FOUND, "회원정보를 찾을 수 없습니다"),
-    USER_UNAUTHORIZED(401, HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
-    USER_FORBIDDEN(403, HttpStatus.FORBIDDEN, "권한이 없습니다.")
+public enum MessageExceptionType implements BaseExceptionType {
+    MESSAGE_NOT_FOUND(404, HttpStatus.NOT_FOUND, "메시지가 존재하지 않습니다."),
+    MESSAGE_EXPIRED(403, HttpStatus.FORBIDDEN, "만료된 메시지입니다."),
+    MESSAGE_ALREADY_LIKED(400, HttpStatus.BAD_REQUEST, "이미 좋아요 표시한 메시지입니다.")
     ;
 
     private int errorCode;
