@@ -11,4 +11,5 @@ public interface UserService {
     User login(User user);
     void modifyUser(User user);
     void removeUser(User user);
+    void deleteUserForTest(Long userId);
 }

@@ -3,13 +3,14 @@ package com.instantrip.was.domain.user.controller;
 import com.instantrip.was.domain.user.dto.UserJoinRequest;
 import com.instantrip.was.domain.user.dto.UserLoginResponse;
 import com.instantrip.was.domain.user.dto.UserResponse;
+import com.instantrip.was.domain.user.exception.UserException;
+import com.instantrip.was.domain.user.exception.UserExceptionType;
 import com.instantrip.was.domain.user.service.KakaoService;
 import com.instantrip.was.domain.user.service.UserService;
 import com.instantrip.was.domain.user.entity.User;
 import com.instantrip.was.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,7 +46,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "회원가입이 필요합니다. 여기서 받은 응답 data값 kakaoUserNumber(필수), email(선택)을 받아서, 닉네임 입력 화면으로 넘어가서 회원가입처리"),
     })
     @GetMapping(path = "/oauth")
-    public ResponseEntity<BaseResponse> kakaoOauth(@RequestParam String code, HttpServletRequest req) throws IOException {
+    public BaseResponse<UserLoginResponse> kakaoOauth(@RequestParam String code, HttpServletRequest req) throws IOException {
         // 카카오 인가코드 수신
         log.info("code : {}", code);
 
@@ -59,8 +60,9 @@ public class UserController {
 
         // 회원가입 필요한 경우
         if (loginUser == null) {
-            return new ResponseEntity(new BaseResponse("404", HttpStatus.NOT_FOUND,
-                    "회원가입이 필요합니다.", user), HttpStatus.NOT_FOUND);
+            return new BaseResponse<UserLoginResponse>("404", HttpStatus.NOT_FOUND,
+                    "회원가입이 필요합니다.", null);
+
         }
 
         // 로그인 성공
@@ -72,8 +74,9 @@ public class UserController {
         session.setAttribute("userName", loginUser.getUserName());
         session.setMaxInactiveInterval(1800);
 
-        return new ResponseEntity(new BaseResponse("00", HttpStatus.OK, "로그인 성공"
-        , loginUser), HttpStatus.OK);
+        UserLoginResponse userLoginResponse = modelMapper.map(loginUser, UserLoginResponse.class);
+        return new BaseResponse<UserLoginResponse>("200", HttpStatus.OK,
+                "로그인에 성공했습니다.", userLoginResponse);
     }
 
     @Operation(summary = "회원정보 조회", description = "회원번호가 userId인 회원정보를 조회합니다.")
@@ -82,11 +85,21 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "Not Found")
     })
     @GetMapping(path = "/{userId}")
-    public ResponseEntity userDetails(@PathVariable Long userId) {
+    public BaseResponse<UserResponse> userDetails(@PathVariable Long userId, HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session == null)
+            throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
+
+        // 본인만 정보 조회 가능
+        Long sessionUserId = (Long) session.getAttribute("userId");
+        if (!userId.equals(sessionUserId))
+            throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
+
         User user = userService.findUserByUserId(userId);
         UserResponse userResponse = modelMapper.map(user, UserResponse.class);
 
-        return new ResponseEntity(userResponse, HttpStatus.OK);
+        return new BaseResponse<UserResponse>("200", HttpStatus.OK, "조회 성공했습니다.", userResponse);
     }
 
     @Operation(summary = "회원가입", description = "카카오 인증 완료 후, 기존 회원이 아닌 경우 닉네임 입력 후 호출하는 회원가입 API 입니다.")
@@ -108,7 +121,16 @@ public class UserController {
         if (session != null)
             session.invalidate();
     }
-    
+
+    @Operation(summary = "테스트용 유저 삭제 API")
+    @GetMapping(path = "/delete")
+    public BaseResponse<Void> deleteUserForTest(@RequestParam Long userId) {
+        log.info("테스트용 유저 삭제 요청");
+        userService.deleteUserForTest(userId);
+
+        return new BaseResponse<>("200", HttpStatus.OK, "삭제됐어용", null);
+    }
+
     @Hidden
     @GetMapping(path = "/sessionTest")
     public void sessionTest(@SessionAttribute(name = "userId", required = false) Long userId) {
