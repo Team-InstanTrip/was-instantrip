@@ -8,10 +8,10 @@ import lombok.*;
 @NoArgsConstructor @AllArgsConstructor
 public class MessageEditRequest {
 
-    @Schema(required = false)
-    Integer duration;
-    @Schema(required = false)
-    String contents;
-    @Schema(required = false)
-    String messageType;
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Integer duration;
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String contents;
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String messageType;
 }
