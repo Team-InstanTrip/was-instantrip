@@ -52,16 +52,17 @@ public class UserController {
 
         // access token 발급
         String accessToken = kakaoService.getKakaoAccessToken(code);
-        User user = kakaoService.getKakaoUserInfo(accessToken);
+        User kakaoUserInfo = kakaoService.getKakaoUserInfo(accessToken);
 
         log.info("▶▶▶ 로그인 요청");
 
-        User loginUser = userService.login(user);
+        User loginUser = userService.login(kakaoUserInfo);
 
         // 회원가입 필요한 경우
         if (loginUser == null) {
+            UserLoginResponse response = modelMapper.map(kakaoUserInfo, UserLoginResponse.class);
             return new BaseResponse<UserLoginResponse>("404", HttpStatus.NOT_FOUND,
-                    "회원가입이 필요합니다.", null);
+                    "회원가입이 필요합니다.", response);
 
         }
 

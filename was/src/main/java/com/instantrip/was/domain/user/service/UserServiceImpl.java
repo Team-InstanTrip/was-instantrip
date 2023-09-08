@@ -4,6 +4,7 @@ import com.instantrip.was.domain.user.entity.User;
 import com.instantrip.was.domain.user.exception.UserException;
 import com.instantrip.was.domain.user.exception.UserExceptionType;
 import com.instantrip.was.domain.user.repository.UserRepository;
+import com.instantrip.was.global.exception.GlobalExceptionType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(User user) {
+        if (user == null)
+            throw new UserException(GlobalExceptionType.MISSING_INPUT);
+
         Optional<User> foundUser = userRepository.findByKakaoUserNumberAndActiveStatus(user.getKakaoUserNumber(), true);
 
         // 이미 회원인 경우 로그인처리
