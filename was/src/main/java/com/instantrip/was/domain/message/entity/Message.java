@@ -34,6 +34,7 @@ public class Message {
     private Double latitude;
     private Double longitude;
     private Integer likes;
+    private Integer dislikes;
     private String status;
 
     public void calculateExpireTime() {

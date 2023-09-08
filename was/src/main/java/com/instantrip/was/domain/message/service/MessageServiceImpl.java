@@ -1,5 +1,7 @@
 package com.instantrip.was.domain.message.service;
 
+import com.instantrip.was.domain.dislike.entity.Dislike;
+import com.instantrip.was.domain.dislike.repository.DislikeRepository;
 import com.instantrip.was.domain.favorite.entity.Favorite;
 import com.instantrip.was.domain.favorite.repository.FavoriteRepository;
 import com.instantrip.was.domain.message.entity.Message;
@@ -22,6 +24,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     FavoriteRepository favoriteRepository;
+    @Autowired
+    DislikeRepository dislikeRepository;
 
     @Override
     public Message findMessageByMessageId(Long messageId) {
@@ -69,6 +73,29 @@ public class MessageServiceImpl implements MessageService {
         // favorite 등록
         Favorite favorite = new Favorite(userId, messageId);
         favoriteRepository.save(favorite);
+    }
+
+    @Override
+    public void dislikeMessage(Long messageId, Long userId) {
+        // 메시지 찾기
+        Optional<Message> foundMessage = messageRepository.findById(messageId);
+        if (!foundMessage.isPresent())
+            throw new MessageException(MessageExceptionType.MESSAGE_NOT_FOUND);
+
+        // 싫어요 누른적 있는지?
+        Optional<Dislike> foundDislike = dislikeRepository.findByMessageIdAndUserId(messageId, userId);
+        // 이미 싫어요 처리 되었습니다
+        if (foundDislike.isPresent())
+            throw new MessageException(MessageExceptionType.MESSAGE_ALREADY_DISLIKED);
+
+        // 좋아요 처리
+        Message message = foundMessage.get();
+        message.setDislikes(message.getDislikes() + 1);
+        messageRepository.save(message);
+
+        // favorite 등록
+        Dislike dislike = new Dislike(userId, messageId);
+        dislikeRepository.save(dislike);
     }
 
     @Override

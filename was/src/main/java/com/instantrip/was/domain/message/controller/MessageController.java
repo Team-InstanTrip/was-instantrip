@@ -2,10 +2,8 @@ package com.instantrip.was.domain.message.controller;
 
 import com.instantrip.was.domain.message.dto.MessageEditRequest;
 import com.instantrip.was.domain.message.dto.MessageRegisterRequest;
-import com.instantrip.was.domain.message.dto.MessageRequest;
 import com.instantrip.was.domain.message.dto.MessageResponse;
 import com.instantrip.was.domain.message.entity.Message;
-import com.instantrip.was.domain.message.repository.MessageRepository;
 import com.instantrip.was.domain.message.service.MessageService;
 import com.instantrip.was.domain.user.exception.UserException;
 import com.instantrip.was.domain.user.exception.UserExceptionType;
@@ -16,13 +14,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.apache.coyote.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,10 +28,9 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/api/messages")
 
+@Slf4j
 @Tag(name = "메시지 API", description = "메시지 관련 기능 API")
 public class MessageController {
-    private Logger logger = LoggerFactory.getLogger(MessageController.class);
-
     @Autowired
     MessageService messageService;
 
@@ -56,10 +52,10 @@ public class MessageController {
             throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
 
 
-        logger.info("=== meesageRequest : {}", messageRequest.toString());
+        log.info("=== meesageRequest : {}", messageRequest.toString());
         Message message = modelMapper.map(messageRequest, Message.class);
         message.setUserId(userId);
-        logger.info("=== message : {}", message.toString());
+        log.info("=== message : {}", message.toString());
         messageService.addMessage(message);
 
         return ResponseEntity.ok()
@@ -78,23 +74,6 @@ public class MessageController {
         MessageResponse messageResponse = modelMapper.map(message, MessageResponse.class);
 
         return messageResponse;
-    }
-
-    @Operation(summary = "메시지 좋아요 등록", description = "좋아요 등록")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 메시지입니다."),
-            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다")
-    })
-    @PostMapping(path = "/{messageId}/like")
-    public BaseResponse<String> likeMessage(HttpServletRequest req, @PathVariable Long messageId) {
-        HttpSession session = req.getSession();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null)
-            throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
-
-        messageService.likeMessage(messageId, userId);
-        return new BaseResponse<>("200", HttpStatus.OK, "좋아요 표시했습니다.", "");
     }
 
     @Operation(summary = "메시지 삭제", description = "메시지를 삭제합니다.")
