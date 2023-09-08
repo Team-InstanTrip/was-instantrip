@@ -36,7 +36,8 @@ public class MessageReactionController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "필수 입력값이 누락되었습니다."),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 메시지입니다."),
-            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다")
+            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다"),
+            @ApiResponse(responseCode = "40", description = "이미 좋아요 눌렀습니다")
     })
     @PostMapping(path = "/like")
     public BaseResponse<MessageReactionResponse> likeMessage(HttpServletRequest req,
@@ -46,7 +47,7 @@ public class MessageReactionController {
         if (userId == null)
             throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
 
-        if (messageId != null)
+        if (messageId == null)
             throw new MessageException(GlobalExceptionType.MISSING_INPUT);
 
         messageService.likeMessage(messageId, userId);
@@ -61,7 +62,8 @@ public class MessageReactionController {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "400", description = "필수 입력값이 누락되었습니다."),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 메시지입니다."),
-            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다")
+            @ApiResponse(responseCode = "401", description = "로그인이 필요합니다"),
+            @ApiResponse(responseCode = "41", description = "이미 싫어요 표시한 메시지입니다.")
     })
     @PostMapping(path = "/dislike")
     public BaseResponse<MessageReactionResponse> dislikeMessage(HttpServletRequest req,
@@ -71,9 +73,10 @@ public class MessageReactionController {
         if (userId == null)
             throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
 
-        if (messageId != null)
+        if (messageId == null)
             throw new MessageException(GlobalExceptionType.MISSING_INPUT);
 
+        // TODO 좋아요, 싫어요 둘다 누를 수 없도록 제어
         messageService.dislikeMessage(messageId, userId);
 
         MessageReactionResponse response = new MessageReactionResponse(messageId);
