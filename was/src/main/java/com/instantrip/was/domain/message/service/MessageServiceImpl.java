@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -147,5 +148,11 @@ public class MessageServiceImpl implements MessageService {
 
         originalMessage.setStatus("ED"); // TODO 상태코드
         return messageRepository.save(originalMessage);
+    }
+
+    @Override
+    public List<Message> listNearbyMessage(Double lat, Double lon, Integer radius) {
+        List<Message> list = messageRepository.findNearbyMessages(lat, lon, radius);
+        return list;
     }
 }

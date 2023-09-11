@@ -3,10 +3,14 @@ package com.instantrip.was.domain.message.controller;
 import com.instantrip.was.domain.message.dto.MessageEditRequest;
 import com.instantrip.was.domain.message.dto.MessageRegisterRequest;
 import com.instantrip.was.domain.message.dto.MessageResponse;
+import com.instantrip.was.domain.message.dto.NearbyMessageResponse;
 import com.instantrip.was.domain.message.entity.Message;
+import com.instantrip.was.domain.message.exception.MessageException;
+import com.instantrip.was.domain.message.repository.MessageRepository;
 import com.instantrip.was.domain.message.service.MessageService;
 import com.instantrip.was.domain.user.exception.UserException;
 import com.instantrip.was.domain.user.exception.UserExceptionType;
+import com.instantrip.was.global.exception.GlobalExceptionType;
 import com.instantrip.was.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,6 +28,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/api/messages")
@@ -116,4 +121,25 @@ public class MessageController {
         return new BaseResponse<>("200", HttpStatus.OK, "수정되었습니다.", editedMessage);
     }
 
+    @Operation(summary = "근방 메시지 목록 조회", description = "위도, 경도, 반경(m)를 입력받아 근방 메시지 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "00", description = "OK")
+    })
+    @GetMapping(path = "/nearby")
+    public BaseResponse<NearbyMessageResponse> listNearbyMessages(@RequestParam Double lat, @RequestParam Double lon, @RequestParam Integer radius) {
+        if (lat == null || lon == null || radius == null) {
+            throw new MessageException(GlobalExceptionType.MISSING_INPUT);
+        }
+
+        log.info("▶▶▶ 주변 메시지 조회 요청");
+        log.info("위도: {} | 경도: {} | 범위: {}", lat, lon, radius);
+
+        List<Message> list = messageService.listNearbyMessage(lat, lon, radius);
+        List<MessageResponse> resList = list.stream()
+                .map(source -> modelMapper.map(source, MessageResponse.class))
+                .collect(Collectors.toList());
+        NearbyMessageResponse nearbyMessageResponse = new NearbyMessageResponse(resList);
+
+        return new BaseResponse<NearbyMessageResponse>("00", HttpStatus.OK, "조회 완료되었습니다.", nearbyMessageResponse);
+    }
 }
