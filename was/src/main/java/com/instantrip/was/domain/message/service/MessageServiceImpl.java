@@ -66,15 +66,17 @@ public class MessageServiceImpl implements MessageService {
         if (foundFavorite.isPresent())
             throw new MessageException(MessageExceptionType.MESSAGE_ALREADY_LIKED);
 
+        // 좋아요 처리
+        Message message = foundMessage.get();
+        message.setLikes(message.getLikes() + 1);
+
         // 싫어요를 누른 적이 있으면, 싫어요 취소
         Optional<Dislike> foundDislike = dislikeRepository.findByMessageIdAndUserId(messageId, userId);
         if (foundDislike.isPresent()) {
             dislikeRepository.delete(foundDislike.get());
+            message.setDislikes(message.getDislikes() - 1);
         }
 
-        // 좋아요 처리
-        Message message = foundMessage.get();
-        message.setLikes(message.getLikes() + 1);
         messageRepository.save(message);
 
         // favorite 등록
@@ -95,18 +97,20 @@ public class MessageServiceImpl implements MessageService {
         if (foundDislike.isPresent())
             throw new MessageException(MessageExceptionType.MESSAGE_ALREADY_DISLIKED);
 
+        // 싫어요 처리
+        Message message = foundMessage.get();
+        message.setDislikes(message.getDislikes() + 1);
+
         // 좋아요를 누른 적이 있으면, 좋아요 취소
         Optional<Favorite> foundFavorite = favoriteRepository.findByMessageIdAndUserId(messageId, userId);
         if (foundFavorite.isPresent()) {
             favoriteRepository.delete(foundFavorite.get());
+            message.setLikes(message.getLikes() - 1);
         }
 
-        // 좋아요 처리
-        Message message = foundMessage.get();
-        message.setDislikes(message.getDislikes() + 1);
         messageRepository.save(message);
 
-        // favorite 등록
+        // dislike 등록
         Dislike dislike = new Dislike(userId, messageId);
         dislikeRepository.save(dislike);
     }
