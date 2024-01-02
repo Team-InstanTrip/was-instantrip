@@ -3,17 +3,17 @@ package com.instantrip.was.domain.tourapi.controller;
 import com.instantrip.was.domain.tourapi.dto.TourApiRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.StandardBeanInfoFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.io.IOException;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping(path = "/api/tourapi")
@@ -23,7 +23,7 @@ import java.nio.charset.StandardCharsets;
 public class TourApiController {
     private final static String endPoint = "http://apis.data.go.kr/B551011/KorService1";
 
-    @Value("${tour-encoding-key}")
+    @Value("${tour.api.encoding-key}")
     private String encodingKey;
 
     @PostMapping(path = "/location-based")

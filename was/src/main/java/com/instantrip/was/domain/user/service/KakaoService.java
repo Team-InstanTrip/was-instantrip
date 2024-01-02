@@ -19,7 +19,7 @@ import java.net.URL;
 public class KakaoService {
     private Logger logger = LoggerFactory.getLogger(KakaoService.class);
 
-    @Value("${kakao-rest-api-key}")
+    @Value("${kakao.api.rest-api-key}")
     private String REST_API_KEY;
 
     @Value("${server.ip}")
