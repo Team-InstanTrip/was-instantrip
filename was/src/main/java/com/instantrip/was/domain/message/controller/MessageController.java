@@ -6,12 +6,11 @@ import com.instantrip.was.domain.message.dto.MessageResponse;
 import com.instantrip.was.domain.message.dto.NearbyMessageResponse;
 import com.instantrip.was.domain.message.entity.Message;
 import com.instantrip.was.domain.message.exception.MessageException;
-import com.instantrip.was.domain.message.repository.MessageRepository;
 import com.instantrip.was.domain.message.service.MessageService;
 import com.instantrip.was.domain.user.exception.UserException;
 import com.instantrip.was.domain.user.exception.UserExceptionType;
+import com.instantrip.was.global.dto.BaseResponse;
 import com.instantrip.was.global.exception.GlobalExceptionType;
-import com.instantrip.was.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,10 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,7 +92,7 @@ public class MessageController {
             throw new UserException(UserExceptionType.USER_UNAUTHORIZED);
 
         messageService.deleteMessage(messageId, userId);
-        return new BaseResponse<>("200", HttpStatus.OK, "삭제되었습니다.", "");
+        return BaseResponse.ok("삭제되었습니다.");
     }
 
     @Operation(summary = "메시지 수정", description = "메시지를 수정합니다.")
@@ -118,7 +114,7 @@ public class MessageController {
         Message message = modelMapper.map(messageRequest, Message.class);
         Message editedMessage = messageService.updateMessage(messageId, userId, message);
 
-        return new BaseResponse<>("200", HttpStatus.OK, "수정되었습니다.", editedMessage);
+        return BaseResponse.ok("수정되었습니다.", editedMessage);
     }
 
     @Operation(summary = "근방 메시지 목록 조회", description = "위도, 경도, 반경(m)를 입력받아 근방 메시지 목록을 조회합니다.")
@@ -140,6 +136,6 @@ public class MessageController {
                 .collect(Collectors.toList());
         NearbyMessageResponse nearbyMessageResponse = new NearbyMessageResponse(resList);
 
-        return new BaseResponse<NearbyMessageResponse>("00", HttpStatus.OK, "조회 완료되었습니다.", nearbyMessageResponse);
+        return BaseResponse.ok("조회 완료되었습니다.", nearbyMessageResponse);
     }
 }

@@ -5,8 +5,8 @@ import com.instantrip.was.domain.message.exception.MessageException;
 import com.instantrip.was.domain.message.service.MessageService;
 import com.instantrip.was.domain.user.exception.UserException;
 import com.instantrip.was.domain.user.exception.UserExceptionType;
+import com.instantrip.was.global.dto.BaseResponse;
 import com.instantrip.was.global.exception.GlobalExceptionType;
-import com.instantrip.was.global.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,8 +16,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/messages/react")
@@ -41,7 +43,7 @@ public class MessageReactionController {
     })
     @PostMapping(path = "/like")
     public BaseResponse<MessageReactionResponse> likeMessage(HttpServletRequest req,
-                         @RequestParam(required = true) Long messageId) {
+                                                             @RequestParam(required = true) Long messageId) {
         HttpSession session = req.getSession();
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null)
@@ -53,8 +55,7 @@ public class MessageReactionController {
         messageService.likeMessage(messageId, userId);
 
         MessageReactionResponse response = new MessageReactionResponse(messageId);
-        return new BaseResponse<MessageReactionResponse>("200",
-                HttpStatus.OK, "좋아요 표시했습니다.", response);
+        return BaseResponse.ok("좋아요 표시했습니다.", response);
     }
 
     @Operation(summary = "메시지 싫어요 등록")
@@ -80,8 +81,7 @@ public class MessageReactionController {
         messageService.dislikeMessage(messageId, userId);
 
         MessageReactionResponse response = new MessageReactionResponse(messageId);
-        return new BaseResponse<MessageReactionResponse>("200",
-                HttpStatus.OK, "싫어요 표시했습니다.", response);
+        return BaseResponse.ok("싫어요 표시했습니다.", response);
     }
 
 }

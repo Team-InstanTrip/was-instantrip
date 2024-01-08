@@ -2,10 +2,7 @@ package com.instantrip.was.domain.member.entity;
 
 import com.instantrip.was.global.util.BooleanTFConverter;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.sql.Date;
@@ -17,6 +14,7 @@ import java.util.List;
 @Table(name = "MEMBER")
 @Getter
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
@@ -34,7 +32,7 @@ public class Member {
     private String role;
 
     public List<SimpleGrantedAuthority> getAuthorities() {
-        String[] auths = role.split(";");
+        String[] auths = role.split(" ");
         List<SimpleGrantedAuthority> authList = new ArrayList<>();
 
         return Arrays.stream(auths).map(item -> {
