@@ -1,5 +1,6 @@
 package com.instantrip.was.global.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 @AllArgsConstructor
 @RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BaseResponse<T> {
     private final String code;
     private final String message;
